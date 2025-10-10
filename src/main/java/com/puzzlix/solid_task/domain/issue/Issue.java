@@ -1,10 +1,16 @@
 package com.puzzlix.solid_task.domain.issue;
 
+import com.puzzlix.solid_task.domain.comment.Comment;
+import com.puzzlix.solid_task.domain.project.Project;
+import com.puzzlix.solid_task.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,8 +36,19 @@ public class Issue {
     @Enumerated(EnumType.STRING) //DB서는 String으로
     private IssueStatus issueStatus;
 
-    //TODO 추후 연결
-    private Long projectId;
-    private Long reporterId;
-    private Long assigneeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id  ")
+    private Project project;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reporter_id  ")
+    private User reporter;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assignee_id  ")
+    private User assignee;
+
+    //댓글
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
 }
