@@ -3,16 +3,14 @@ package com.puzzlix.solid_task.domain.comment;
 import com.puzzlix.solid_task.domain.issue.Issue;
 import com.puzzlix.solid_task.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
+@ToString(exclude = {"issue", "writer"}) // 순환참조 방지
 public class Comment {
 
     @Id

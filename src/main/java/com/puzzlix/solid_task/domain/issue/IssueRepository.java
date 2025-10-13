@@ -13,4 +13,8 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
 //    Optional<Issue> findById(Long id);
 //
 //    List<Issue> findAll();
+
+    // N+1 해결방법
+    // 한방 쿼리 사용
+
 }

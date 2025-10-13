@@ -4,10 +4,7 @@ import com.puzzlix.solid_task.domain.comment.Comment;
 import com.puzzlix.solid_task.domain.project.Project;
 import com.puzzlix.solid_task.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@ToString(exclude = {"project", "reporter", "assignee", "comments"})
 public class Issue {
 
     //pk

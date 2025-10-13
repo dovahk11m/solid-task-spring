@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "user_table")
-@ToString // 순환참조 조심
+@ToString(exclude = "issues")
 public class User {
 
     @Id
