@@ -3,7 +3,6 @@ package com.puzzlix.solid_task._global.config;
 /*
 앱컨피그 <-> 웹컨피그
 앱 전체에 관련된 설정
-
  */
 
 import org.springframework.context.annotation.Bean;
