@@ -5,6 +5,7 @@ import com.puzzlix.solid_task.domain.project.Project;
 import com.puzzlix.solid_task.domain.project.ProjectRepository;
 import com.puzzlix.solid_task.domain.user.User;
 import com.puzzlix.solid_task.domain.user.UserRepository;
+import com.puzzlix.solid_task.domain.user.UserRole;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,21 @@ public class IssueService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
 
-//    DI처리
-//    public IssueService(IssueRepository issueRepository){
-//        this.issueRepository = issueRepository
-//    }
+    public Issue updateIssueStatus(
+            Long issueid,
+            IssueStatus issueStatus,
+            String userEmail
+    ) {
+        User requestUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new NoSuchElementException("해당 유저 없음"));
+        Issue issue = issueRepository.findById(issueid).orElseThrow(() -> new NoSuchElementException("해당 이슈 없음"));
+        boolean isAdmin = requestUser.getUserRole().equals(UserRole.ADMIN);
+        boolean isAssignee = requestUser.getId().equals(issue.getAssignee().getId());
+        if (!isAdmin && !isAssignee) {
+            throw new SecurityException("수정 권한 없음");
+        }
+        issue.setIssueStatus(issueStatus);
+        return issue;
+    }
 
     /*
     이슈 수정 로직
@@ -33,8 +45,18 @@ public class IssueService {
     4.JPA사용 (수정전략) -> dirty checking
      */
     @Transactional
-    public Issue updateIssue(Long issueId, IssueRequest.Update request){
-        Issue issue = issueRepository.findById(issueId).orElseThrow(()-> new NoSuchElementException("해당 이슈 없음"));
+    public Issue updateIssue(
+            Long issueId,
+            IssueRequest.Update request,
+            String userEmail
+    ) {
+        User requestUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new NoSuchElementException("해당 유저 없음"));
+        Issue issue = issueRepository.findById(issueId).orElseThrow(() -> new NoSuchElementException("해당 이슈 없음"));
+        boolean isAdmin = requestUser.getUserRole().equals(UserRole.ADMIN);
+        boolean isReporter = requestUser.getId().equals(issue.getReporter().getId());
+        if (!isAdmin && !isReporter) {
+            throw new SecurityException("수정 권한 없음");
+        }
         //담당자 할당 여부에 따른 분기처리
         if (request.getAssigneeId() != null) {
             User assignee = userRepository.findById(request.getAssigneeId()).orElseThrow(() -> new NoSuchElementException("해당 담당자 없음"));
@@ -53,11 +75,21 @@ public class IssueService {
     }
 
     //이슈 삭제 로직
-    public void deleteIssue(Long issueId){
-        if (!issueRepository.existsById(issueId)) {
-            throw new NoSuchElementException("해당 이슈 없음");
+    @Transactional
+    public void deleteIssue(
+            Long issueId,
+            String userEmail
+    ) {
+        User requestUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new NoSuchElementException("해당 유저 없음"));
+        Issue issue = issueRepository.findById(issueId).orElseThrow(() -> new NoSuchElementException("해당 이슈 없음"));
+        boolean isAdmin = requestUser.getUserRole().equals(UserRole.ADMIN);
+        boolean isReporter = requestUser.getId().equals(issue.getReporter().getId());
+
+        if (!isAdmin && !isReporter) {
+            throw new SecurityException("삭제 권한 없음");
         }
-        issueRepository.deleteById(issueId);
+        issueRepository.delete(issue);
+        //TODO 삭제 이력 관리 feat.userEmail
     }
 
     //이슈 생성 로직

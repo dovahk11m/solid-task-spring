@@ -22,8 +22,11 @@ public class User {
 
     private String name;
     private String email;
-
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole userRole;
 
     @OneToMany(mappedBy = "reporter")
     private List<Issue> issues = new ArrayList<>();

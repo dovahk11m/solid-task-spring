@@ -7,6 +7,7 @@ import com.puzzlix.solid_task.domain.project.Project;
 import com.puzzlix.solid_task.domain.project.ProjectRepository;
 import com.puzzlix.solid_task.domain.user.User;
 import com.puzzlix.solid_task.domain.user.UserRepository;
+import com.puzzlix.solid_task.domain.user.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +34,7 @@ public class DataLoader implements CommandLineRunner {
                 "홍길동",
                 "test1@naver.com",
                 passwordEncoder.encode("1234"),
+                UserRole.USER,
                 new ArrayList<>()
         ));
         User testUser2 = userRepository.save(new User(
@@ -40,6 +42,15 @@ public class DataLoader implements CommandLineRunner {
                 "장길산",
                 "test2@naver.com",
                 passwordEncoder.encode("1234"),
+                UserRole.USER,
+                new ArrayList<>()
+        ));
+        User admin1 = userRepository.save(new User(
+                null,
+                "관리자1",
+                "admin1@naver.com",
+                passwordEncoder.encode("1234"),
+                UserRole.ADMIN,
                 new ArrayList<>()
         ));
 

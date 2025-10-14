@@ -18,18 +18,39 @@ public class IssueController {
     private final IssueService issueService;
 
     /*
+    특정 이슈 수정 by (담당자, 관리자)
+    PATCH
+    http://localhost:8080/api/issues/{id}/status
+     */
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<CommonResponseDTO<Issue>> updateIssueStatus(
+            @PathVariable(name = "id") Long issueId,
+            @RequestParam("status") IssueStatus newStatus,
+            @RequestAttribute("userEmail") String userEmail
+    ) {
+        Issue issue = issueService.updateIssueStatus(
+                issueId,
+                newStatus,
+                userEmail
+        );
+        return ResponseEntity.ok(CommonResponseDTO.success(issue, "이슈 상태 변경 성공"));
+    }
+
+    /*
     이슈 수정 API
     PUT
-    /api/issues/{issueId}
+    /api/issues/{id}
      */
     @PutMapping("/{id}")
     public ResponseEntity<CommonResponseDTO<IssueResponse.FindById>> updateIssue(
             @PathVariable(name = "id") Long id,
-            @RequestBody IssueRequest.Update request
-    ) { //인증검사, 유효성검사
+            @RequestBody IssueRequest.Update request,
+            @RequestAttribute("userEmail") String userEmail
+    ) {
         Issue issue = issueService.updateIssue(
                 id,
-                request
+                request,
+                userEmail
         );
         IssueResponse.FindById findByIdDto = new IssueResponse.FindById(issue);
         return ResponseEntity.ok(CommonResponseDTO.success(
@@ -38,6 +59,24 @@ public class IssueController {
         ));
     }
 
+    /*
+    이슈 삭제 API
+    DELETE/issues/{id}
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteIssue(
+            @PathVariable(name = "id") Long id,
+            @RequestAttribute("userEmail") String userEmail
+    ) {
+        issueService.deleteIssue(
+                id,
+                userEmail
+        );
+        return ResponseEntity.ok(CommonResponseDTO.success(
+                null,
+                "이슈 삭제 성공"
+        ));
+    }
 
     /*
     이슈 생성 API

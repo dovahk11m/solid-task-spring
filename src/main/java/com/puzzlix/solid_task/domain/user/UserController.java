@@ -34,7 +34,7 @@ public class UserController {
     ) {
         User user = userService.login(type, request);
         //이메일을 기반으로 토큰 생성
-        String token = jwtTokenProvider.createToken((user.getEmail()));
+        String token = jwtTokenProvider.createToken((user));
         return ResponseEntity.ok(CommonResponseDTO.success(
                 token,
                 "로그인 완료"

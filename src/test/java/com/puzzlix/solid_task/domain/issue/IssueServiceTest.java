@@ -14,6 +14,7 @@ import com.puzzlix.solid_task.domain.project.Project;
 import com.puzzlix.solid_task.domain.project.ProjectRepository;
 import com.puzzlix.solid_task.domain.user.User;
 import com.puzzlix.solid_task.domain.user.UserRepository;
+import com.puzzlix.solid_task.domain.user.UserRole;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,6 +68,7 @@ public class IssueServiceTest {
                 "홍길동",
                 "test@test.com",
                 "1234",
+                UserRole.USER,
                 null
         );
         Project mockProject = new Project(

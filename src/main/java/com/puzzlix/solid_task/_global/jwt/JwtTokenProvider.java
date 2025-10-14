@@ -2,6 +2,8 @@ package com.puzzlix.solid_task._global.jwt;
 
 // JJWT 0.12.x API 사용
 
+import com.puzzlix.solid_task.domain.user.User;
+import com.puzzlix.solid_task.domain.user.UserRole;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -33,12 +35,13 @@ public class JwtTokenProvider {
     }
 
     //로그인시 새 토큰 생성
-    public String createToken(String email) {
+    public String createToken(User user) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
         //TODO 속성 공부
         return Jwts.builder()
-                .subject(email)
+                .subject(user.getEmail())
+                .claim("role", user.getUserRole().name())
                 .issuedAt(now)
                 .expiration(validity)
                 .signWith(key)
@@ -90,6 +93,16 @@ public class JwtTokenProvider {
      */
     public String getSubject(String token) {
         return parseClaims(token).getSubject();
+    }
+
+    /**
+     * 토큰에서 사용자 Role 추출
+     * @param token
+     * @return
+     */
+    public UserRole getRole(String token){
+        String role = parseClaims(token).get("role", String.class);
+        return UserRole.valueOf(role); //스트링값에 맞는 이넘 반환
     }
 
     //클레임 정보를 추출하는 기능
