@@ -18,6 +18,28 @@ public class IssueController {
     private final IssueService issueService;
 
     /*
+    이슈 수정 API
+    PUT
+    /api/issues/{issueId}
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<CommonResponseDTO<IssueResponse.FindById>> updateIssue(
+            @PathVariable(name = "id") Long id,
+            @RequestBody IssueRequest.Update request
+    ) { //인증검사, 유효성검사
+        Issue issue = issueService.updateIssue(
+                id,
+                request
+        );
+        IssueResponse.FindById findByIdDto = new IssueResponse.FindById(issue);
+        return ResponseEntity.ok(CommonResponseDTO.success(
+                findByIdDto,
+                "이슈 변경 성공"
+        ));
+    }
+
+
+    /*
     이슈 생성 API
     POST
     /api/issues
@@ -35,7 +57,7 @@ public class IssueController {
     /api/issues
      */
     @GetMapping
-    public ResponseEntity<CommonResponseDTO<List<IssueResponse.FindAll>>> getIssues(){
+    public ResponseEntity<CommonResponseDTO<List<IssueResponse.FindAll>>> getIssues() {
         //서비스 조회 요청
         List<Issue> issues = issueService.findIssue();
 

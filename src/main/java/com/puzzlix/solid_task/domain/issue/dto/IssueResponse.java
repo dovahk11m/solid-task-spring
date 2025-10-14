@@ -3,6 +3,7 @@ package com.puzzlix.solid_task.domain.issue.dto;
 import com.puzzlix.solid_task.domain.issue.Issue;
 import com.puzzlix.solid_task.domain.issue.IssueStatus;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,31 @@ public class IssueResponse {
                 dtoList.add(new FindAll(issue));
             }
             return dtoList;
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class FindById {
+        private final Long id;
+        private final String title;
+        private final String description;
+        private final IssueStatus status;
+        //연관관계
+        private final String projectName;
+        private final String reporterName;
+        private final String assigneeName;
+
+        //엔티티를 DTO로 변환하는 생성자
+        public FindById(Issue issue) {
+            this.id = issue.getId();
+            this.title = issue.getTitle();
+            this.description = issue.getDescription();
+            this.status = issue.getIssueStatus();
+            this.projectName = issue.getProject().getName();
+            this.reporterName = issue.getReporter().getName();
+            //담당자 Nullable
+            this.assigneeName = issue.getAssignee() != null ? issue.getAssignee().getName() : null;
         }
     }
 }

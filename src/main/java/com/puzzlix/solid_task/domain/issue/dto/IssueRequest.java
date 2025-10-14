@@ -21,4 +21,12 @@ public class IssueRequest {
     }
 
     //IssueRequest.Create dto = new IssueRequest.Create(...);
+
+    @Getter
+    @Setter
+    public static class Update {
+        private String title;
+        private String description;
+        private Long assigneeId;
+    }
 }
