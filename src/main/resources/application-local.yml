@@ -41,6 +41,16 @@ spring:
     # 영속성 컨텍스트 범위
     open-in-view: true
 
+  # 메일 발송(SMTP) 설정
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: choongechobiz@gmail.com # 보내는 메일 계정
+    password: merg zhtu edxo zszf # 해당 계정의 16자리 앱 비밀번호
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
 jwt:
   secret: 'VGhpc0lzQVNlY3JldEtleUZvckpXVFNhZmUhIT8xMjM0NTY='
   expiration-in-ms: 3600000 # 1시간
@@ -48,4 +58,4 @@ jwt:
 notification:
   policy:
     # 이슈 상태가 DONE 으로 변경되었을 때 사용할 알림 타입 지정
-    on-status-done: SMS
+    on-status-done: EMAIL
