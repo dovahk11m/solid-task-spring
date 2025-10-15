@@ -74,8 +74,7 @@ public class IssueServiceTest {
         Project mockProject = new Project(
                 1L,
                 "솔리드테스트",
-                "설명",
-                null
+                "설명"
         );
 
         //when

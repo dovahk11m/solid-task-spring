@@ -1,6 +1,7 @@
 package com.puzzlix.solid_task.domain.issue;
 
 import com.puzzlix.solid_task.domain.issue.dto.IssueRequest;
+import com.puzzlix.solid_task.domain.issue.event.IssueStatusChangedEvent;
 import com.puzzlix.solid_task.domain.project.Project;
 import com.puzzlix.solid_task.domain.project.ProjectRepository;
 import com.puzzlix.solid_task.domain.user.User;
@@ -8,6 +9,7 @@ import com.puzzlix.solid_task.domain.user.UserRepository;
 import com.puzzlix.solid_task.domain.user.UserRole;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +22,10 @@ public class IssueService {
     private final IssueRepository issueRepository;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
+
+    //이벤트 발생자(by 스프링)
+    //이 객체를 통해, 다른 도메인에 이벤트 발생 전파
+    private final ApplicationEventPublisher eventPublisher;
 
     public Issue updateIssueStatus(
             Long issueid,
@@ -34,6 +40,10 @@ public class IssueService {
             throw new SecurityException("수정 권한 없음");
         }
         issue.setIssueStatus(issueStatus);
+        //완료되면 변경사실 전파
+        if (issueStatus.equals(IssueStatus.DONE)) {
+            eventPublisher.publishEvent(new IssueStatusChangedEvent(issue));
+        }
         return issue;
     }
 

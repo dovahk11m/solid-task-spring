@@ -20,10 +20,10 @@ public class IssueController {
     /*
     특정 이슈 수정 by (담당자, 관리자)
     PATCH
-    http://localhost:8080/api/issues/{id}/status
+    http://localhost:8080/api/issues/{id}/status?=DONE
      */
     @PatchMapping("/{id}/status")
-    public ResponseEntity<CommonResponseDTO<Issue>> updateIssueStatus(
+    public ResponseEntity<CommonResponseDTO<?>> updateIssueStatus(
             @PathVariable(name = "id") Long issueId,
             @RequestParam("status") IssueStatus newStatus,
             @RequestAttribute("userEmail") String userEmail
@@ -33,7 +33,10 @@ public class IssueController {
                 newStatus,
                 userEmail
         );
-        return ResponseEntity.ok(CommonResponseDTO.success(issue, "이슈 상태 변경 성공"));
+        //DTO에 담기
+        IssueResponse.FindById response = new IssueResponse.FindById(issue);
+
+        return ResponseEntity.ok(CommonResponseDTO.success(response, "이슈 상태 변경 성공"));
     }
 
     /*
